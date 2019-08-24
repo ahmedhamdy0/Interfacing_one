@@ -1,0 +1,210 @@
+
+Challenge.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000158  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .bss          00000001  00800060  00800060  000001cc  2**0
+                  ALLOC
+  2 .stab         000003c0  00000000  00000000  000001cc  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  3 .stabstr      000006ac  00000000  00000000  0000058c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+   8:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+   c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  10:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  14:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  18:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  1c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  20:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  24:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  28:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  2c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  30:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  34:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  38:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  3c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  40:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  44:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  48:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__vector_18>
+  4c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  50:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d4 e0       	ldi	r29, 0x04	; 4
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+
+00000060 <__do_clear_bss>:
+  60:	10 e0       	ldi	r17, 0x00	; 0
+  62:	a0 e6       	ldi	r26, 0x60	; 96
+  64:	b0 e0       	ldi	r27, 0x00	; 0
+  66:	01 c0       	rjmp	.+2      	; 0x6a <.do_clear_bss_start>
+
+00000068 <.do_clear_bss_loop>:
+  68:	1d 92       	st	X+, r1
+
+0000006a <.do_clear_bss_start>:
+  6a:	a1 36       	cpi	r26, 0x61	; 97
+  6c:	b1 07       	cpc	r27, r17
+  6e:	e1 f7       	brne	.-8      	; 0x68 <.do_clear_bss_loop>
+  70:	0e 94 95 00 	call	0x12a	; 0x12a <main>
+  74:	0c 94 aa 00 	jmp	0x154	; 0x154 <_exit>
+
+00000078 <__bad_interrupt>:
+  78:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000007c <INT2_Init>:
+#include <avr/interrupt.h>
+
+unsigned char num = 0x00 ;
+
+void INT2_Init(void)
+{
+  7c:	df 93       	push	r29
+  7e:	cf 93       	push	r28
+  80:	cd b7       	in	r28, 0x3d	; 61
+  82:	de b7       	in	r29, 0x3e	; 62
+	DDRB &= ~(1<<2) ;  // INT2 Input
+  84:	a7 e3       	ldi	r26, 0x37	; 55
+  86:	b0 e0       	ldi	r27, 0x00	; 0
+  88:	e7 e3       	ldi	r30, 0x37	; 55
+  8a:	f0 e0       	ldi	r31, 0x00	; 0
+  8c:	80 81       	ld	r24, Z
+  8e:	8b 7f       	andi	r24, 0xFB	; 251
+  90:	8c 93       	st	X, r24
+	SREG |= (1<<7) ;   // 1 - Set Global Inturrupt Enabe Bit .
+  92:	af e5       	ldi	r26, 0x5F	; 95
+  94:	b0 e0       	ldi	r27, 0x00	; 0
+  96:	ef e5       	ldi	r30, 0x5F	; 95
+  98:	f0 e0       	ldi	r31, 0x00	; 0
+  9a:	80 81       	ld	r24, Z
+  9c:	80 68       	ori	r24, 0x80	; 128
+  9e:	8c 93       	st	X, r24
+	GICR |= (1<<5) ;   // 2 - Set INT2 Enable Bit .
+  a0:	ab e5       	ldi	r26, 0x5B	; 91
+  a2:	b0 e0       	ldi	r27, 0x00	; 0
+  a4:	eb e5       	ldi	r30, 0x5B	; 91
+  a6:	f0 e0       	ldi	r31, 0x00	; 0
+  a8:	80 81       	ld	r24, Z
+  aa:	80 62       	ori	r24, 0x20	; 32
+  ac:	8c 93       	st	X, r24
+	MCUCSR |= (1<<6) ;    // 3 - Configure INT2 rising edge .
+  ae:	a4 e5       	ldi	r26, 0x54	; 84
+  b0:	b0 e0       	ldi	r27, 0x00	; 0
+  b2:	e4 e5       	ldi	r30, 0x54	; 84
+  b4:	f0 e0       	ldi	r31, 0x00	; 0
+  b6:	80 81       	ld	r24, Z
+  b8:	80 64       	ori	r24, 0x40	; 64
+  ba:	8c 93       	st	X, r24
+}
+  bc:	cf 91       	pop	r28
+  be:	df 91       	pop	r29
+  c0:	08 95       	ret
+
+000000c2 <__vector_18>:
+
+ISR(INT2_vect)
+{
+  c2:	1f 92       	push	r1
+  c4:	0f 92       	push	r0
+  c6:	0f b6       	in	r0, 0x3f	; 63
+  c8:	0f 92       	push	r0
+  ca:	11 24       	eor	r1, r1
+  cc:	8f 93       	push	r24
+  ce:	9f 93       	push	r25
+  d0:	af 93       	push	r26
+  d2:	bf 93       	push	r27
+  d4:	ef 93       	push	r30
+  d6:	ff 93       	push	r31
+  d8:	df 93       	push	r29
+  da:	cf 93       	push	r28
+  dc:	cd b7       	in	r28, 0x3d	; 61
+  de:	de b7       	in	r29, 0x3e	; 62
+	// check overflow
+	if( num==9 )
+  e0:	80 91 60 00 	lds	r24, 0x0060
+  e4:	89 30       	cpi	r24, 0x09	; 9
+  e6:	19 f4       	brne	.+6      	; 0xee <__vector_18+0x2c>
+	{
+		num = 0 ;
+  e8:	10 92 60 00 	sts	0x0060, r1
+  ec:	05 c0       	rjmp	.+10     	; 0xf8 <__vector_18+0x36>
+	}
+	else
+	{
+		num++ ;
+  ee:	80 91 60 00 	lds	r24, 0x0060
+  f2:	8f 5f       	subi	r24, 0xFF	; 255
+  f4:	80 93 60 00 	sts	0x0060, r24
+	}
+	PORTC = ( (PORTC&0xF0) | (num&0x0F) )  ;
+  f8:	a5 e3       	ldi	r26, 0x35	; 53
+  fa:	b0 e0       	ldi	r27, 0x00	; 0
+  fc:	e5 e3       	ldi	r30, 0x35	; 53
+  fe:	f0 e0       	ldi	r31, 0x00	; 0
+ 100:	80 81       	ld	r24, Z
+ 102:	98 2f       	mov	r25, r24
+ 104:	90 7f       	andi	r25, 0xF0	; 240
+ 106:	80 91 60 00 	lds	r24, 0x0060
+ 10a:	8f 70       	andi	r24, 0x0F	; 15
+ 10c:	89 2b       	or	r24, r25
+ 10e:	8c 93       	st	X, r24
+}
+ 110:	cf 91       	pop	r28
+ 112:	df 91       	pop	r29
+ 114:	ff 91       	pop	r31
+ 116:	ef 91       	pop	r30
+ 118:	bf 91       	pop	r27
+ 11a:	af 91       	pop	r26
+ 11c:	9f 91       	pop	r25
+ 11e:	8f 91       	pop	r24
+ 120:	0f 90       	pop	r0
+ 122:	0f be       	out	0x3f, r0	; 63
+ 124:	0f 90       	pop	r0
+ 126:	1f 90       	pop	r1
+ 128:	18 95       	reti
+
+0000012a <main>:
+
+int main(void)
+{
+ 12a:	df 93       	push	r29
+ 12c:	cf 93       	push	r28
+ 12e:	cd b7       	in	r28, 0x3d	; 61
+ 130:	de b7       	in	r29, 0x3e	; 62
+	DDRC |= 0x0F ;   // seven segment
+ 132:	a4 e3       	ldi	r26, 0x34	; 52
+ 134:	b0 e0       	ldi	r27, 0x00	; 0
+ 136:	e4 e3       	ldi	r30, 0x34	; 52
+ 138:	f0 e0       	ldi	r31, 0x00	; 0
+ 13a:	80 81       	ld	r24, Z
+ 13c:	8f 60       	ori	r24, 0x0F	; 15
+ 13e:	8c 93       	st	X, r24
+	PORTC &= 0xF0 ;  // seven segment init
+ 140:	a5 e3       	ldi	r26, 0x35	; 53
+ 142:	b0 e0       	ldi	r27, 0x00	; 0
+ 144:	e5 e3       	ldi	r30, 0x35	; 53
+ 146:	f0 e0       	ldi	r31, 0x00	; 0
+ 148:	80 81       	ld	r24, Z
+ 14a:	80 7f       	andi	r24, 0xF0	; 240
+ 14c:	8c 93       	st	X, r24
+	INT2_Init() ;
+ 14e:	0e 94 3e 00 	call	0x7c	; 0x7c <INT2_Init>
+ 152:	ff cf       	rjmp	.-2      	; 0x152 <main+0x28>
+
+00000154 <_exit>:
+ 154:	f8 94       	cli
+
+00000156 <__stop_program>:
+ 156:	ff cf       	rjmp	.-2      	; 0x156 <__stop_program>
